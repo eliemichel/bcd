@@ -102,6 +102,7 @@ namespace bcd
 		cout << "    -o <output>          The file path to the output image" << endl;
 		cout << "    -i <input>           The file path to the input image" << endl;
 		cout << "    -h <hist>            The file path to the input histograms buffer" << endl;
+		cout << "    -bh <hist>           The file path to the input histograms buffer as output by Blender" << endl;
 		cout << "    -c <cov>             The file path to the input covariance matrices buffer" << endl;
 		cout << "Optional arguments list:" << endl;
 		cout << "    -a <file>            The file path to the .bcd.json file containing arguments for the program" << endl;
@@ -176,6 +177,23 @@ namespace bcd
 				Utils::separateNbOfSamplesFromHistogram(o_rProgramArguments.m_histogramImage, o_rProgramArguments.m_nbOfSamplesImage, histAndNbOfSamplesImage);
 				missingHist = false;
 			}
+			else if (strcmp(argv[argIndex], "-bh") == 0)
+			{
+				argIndex++;
+				if (argIndex == argc)
+				{
+					cout << "ERROR in program arguments: expecting file path to the input blender histogram image after '-bh'" << endl;
+					return false;
+				}
+				Deepimf histAndNbOfSamplesImage;
+				if (!ImageIO::loadMultiChannelsEXR(histAndNbOfSamplesImage, argv[argIndex]))
+				{
+					cout << "ERROR in program arguments: couldn't load input blender histogram image file '" << argv[argIndex] << "'" << endl;
+					return false;
+				}
+				Utils::separateNbOfSamplesFromBlenderHistogram(o_rProgramArguments.m_histogramImage, o_rProgramArguments.m_nbOfSamplesImage, histAndNbOfSamplesImage);
+				missingHist = false;
+			}
 			else if (strcmp(argv[argIndex], "-c") == 0)
 			{
 				argIndex++;
@@ -189,6 +207,23 @@ namespace bcd
 					cout << "ERROR in program arguments: couldn't load input covariance matrix image file '" << argv[argIndex] << "'" << endl;
 					return false;
 				}
+				missingCov = false;
+			}
+			else if (strcmp(argv[argIndex], "-bc") == 0)
+			{
+				argIndex++;
+				if (argIndex == argc)
+				{
+					cout << "ERROR in program arguments: expecting file path to the blender input covariance matrix image after '-bc'" << endl;
+					return false;
+				}
+				Deepimf rawCovarianceImage;
+				if (!ImageIO::loadMultiChannelsEXR(rawCovarianceImage, argv[argIndex]))
+				{
+					cout << "ERROR in program arguments: couldn't load blender input covariance matrix image file '" << argv[argIndex] << "'" << endl;
+					return false;
+				}
+				Utils::convertFromABGR(o_rProgramArguments.m_covarianceImage, rawCovarianceImage);
 				missingCov = false;
 			}
 			else if (strcmp(argv[argIndex], "-d") == 0)

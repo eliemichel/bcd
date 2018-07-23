@@ -45,6 +45,74 @@ namespace bcd
 		return true;
 	}
 
+	bool Utils::separateNbOfSamplesFromBlenderHistogram(
+		Deepimf& o_rHistoImage,
+		Deepimf& o_rNbOfSamplesImage,
+		const Deepimf& i_rHistoAndNbOfSamplesImage)
+	{
+		int w = i_rHistoAndNbOfSamplesImage.getWidth();
+		int h = i_rHistoAndNbOfSamplesImage.getHeight();
+		int d = i_rHistoAndNbOfSamplesImage.getDepth() - 1;
+
+		int nbLayers = d / 4;
+		o_rHistoImage.resize(w, h, 3 * nbLayers); // Keep RGB but not A
+		o_rNbOfSamplesImage.resize(w, h, 1);
+
+		ImfIt histoIt = o_rHistoImage.begin();
+		ImfIt nbOfSamplesIt = o_rNbOfSamplesImage.begin();
+		ImfConstIt histoAndNbOfSamplesIt = i_rHistoAndNbOfSamplesImage.begin();
+		ImfConstIt histoAndNbOfSamplesItEnd = i_rHistoAndNbOfSamplesImage.end();
+
+		size_t destStride = 3 * sizeof(float);
+		size_t sourceStride = 4 * sizeof(float);
+		size_t offset = 1 * sizeof(float); // Channels are ordered ABGR so we skip the first one
+
+		for (; histoAndNbOfSamplesIt != histoAndNbOfSamplesItEnd; ++histoIt, ++nbOfSamplesIt, ++histoAndNbOfSamplesIt)
+		{
+			for (int i = 0; i < nbLayers; ++i)
+			{
+				memcpy(*histoIt + i * destStride + 0 * offset, *histoAndNbOfSamplesIt + i * sourceStride + 3 * offset, destStride); // R
+				memcpy(*histoIt + i * destStride + 1 * offset, *histoAndNbOfSamplesIt + i * sourceStride + 2 * offset, destStride); // G
+				memcpy(*histoIt + i * destStride + 2 * offset, *histoAndNbOfSamplesIt + i * sourceStride + 1 * offset, destStride); // B
+			}
+			nbOfSamplesIt[0] = histoAndNbOfSamplesIt[d];
+		}
+
+		return true;
+	}
+
+	bool Utils::convertFromABGR(
+		Deepimf& o_rDestImage,
+		const Deepimf& i_rSourceImage)
+	{
+		int w = i_rSourceImage.getWidth();
+		int h = i_rSourceImage.getHeight();
+		int d = i_rSourceImage.getDepth();
+
+		int nbLayers = d / 4;
+		o_rDestImage.resize(w, h, 3 * nbLayers); // Keep RGB but not A
+
+		ImfIt destIt = o_rDestImage.begin();
+		ImfConstIt sourceIt = i_rSourceImage.begin();
+		ImfConstIt sourceItEnd = i_rSourceImage.end();
+
+		size_t destStride = 3 * sizeof(float);
+		size_t sourceStride = 4 * sizeof(float);
+		size_t offset = 1 * sizeof(float); // Channels are ordered ABGR so we skip the first one
+
+		for (; sourceIt != sourceItEnd; ++destIt, ++sourceIt)
+		{
+			for (int i = 0; i < nbLayers; ++i)
+			{
+				memcpy(*destIt + i * destStride + 0 * offset, *sourceIt + i * sourceStride + 3 * offset, destStride); // R
+				memcpy(*destIt + i * destStride + 1 * offset, *sourceIt + i * sourceStride + 2 * offset, destStride); // G
+				memcpy(*destIt + i * destStride + 2 * offset, *sourceIt + i * sourceStride + 1 * offset, destStride); // B
+			}
+		}
+
+		return true;
+	}
+
 	Deepimf Utils::mergeHistogramAndNbOfSamples(
 			const Deepimf& i_rHistoImage,
 			const Deepimf& i_rNbOfSamplesImage)

@@ -29,6 +29,18 @@ namespace bcd
 				const DeepImage<float>& i_rHistoAndNbOfSamplesImage
 		);
 
+		/** Blender exports multi-layer EXRs with an alpha channel that we must skip */
+		static bool separateNbOfSamplesFromBlenderHistogram(
+			DeepImage<float>& o_rHistoImage,
+			DeepImage<float>& o_rNbOfSamplesImage,
+			const DeepImage<float>& i_rHistoAndNbOfSamplesImage
+		);
+
+		static bool Utils::convertFromABGR(
+			DeepImage<float>& o_rDestImage,
+			const DeepImage<float>& o_rSourceImage
+		);
+
 		static DeepImage<float> mergeHistogramAndNbOfSamples(
 				const DeepImage<float>& i_rHistoImage,
 				const DeepImage<float>& i_rNbOfSamplesImage

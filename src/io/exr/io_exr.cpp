@@ -73,7 +73,7 @@ float  *readImageEXR(const char *name, int *nx, int *ny)
         // interlaced manner, using appropriate x & y stride values.
         FrameBuffer frameBuffer;
         
-        
+        // reordered channels: internal RGB actually holds BGR because Blender exports multichannel EXR in the ABGR order
         frameBuffer.insert("R", Slice(FLOAT, (char*)(&pixelsR[0] -
                                                      dw.min.x - dw.min.y*width),
                                       sizeof(float), 
@@ -159,6 +159,7 @@ void writeImageEXR(const char *name, const float *pixels,
                      V2i(xOffset + xRes - 1, yOffset + yRes - 1));
     
     try {
+		// reordered channels: internal RGB actually holds BGR because Blender exports multichannel EXR in the ABGR order
         RgbaOutputFile file(name, displayWindow, dataWindow, WRITE_RGBA);
         file.setFrameBuffer(hrgba - xOffset - yOffset * xRes, 1, xRes);
         file.writePixels(yRes);
@@ -311,45 +312,34 @@ float * readMultiImageEXR(const char fileName[],
         int nhnc = (*width) * (*height);
         
         const ChannelList &channelList = file.header().channels();
+
+		std::cout << "<channels>" << std::endl;
+		for (ChannelList::ConstIterator it = channelList.begin(); it != channelList.end(); ++it)
+		{
+			std::cout << it.name() << std::endl;
+		}
+		std::cout << "</channels>" << std::endl;
         
         //zPixels.resizeErase (height, width);
         
         FrameBuffer frameBuffer;
         
-        char ch_name[10];
         int nbin =0;
-        sprintf(ch_name,"Bin_%04d",nbin);
-        //printf("%s\n",ch_name);
-        const Channel *channelPtr = channelList.findChannel(ch_name);
-        
-        
-        while(channelPtr)
-        {
-            nbin++;
-            sprintf(ch_name,"Bin_%04d",nbin);
-            // printf("%s\n",ch_name);
-            channelPtr = channelList.findChannel(ch_name);
-        }
-        
+		for (ChannelList::ConstIterator it = channelList.begin(); it != channelList.end(); ++it)
+		{
+			++nbin;
+			std::cout << it.name() << std::endl;
+		}
         
         //malloc for the whole array
         data = (float*) malloc(nhnc*nbin*sizeof(float));
         
-        
-        for(int i=0;i<nbin;i++)
-        {        
-            sprintf(ch_name,"Bin_%04d",i);
-            // printf("%s\n",ch_name);
-            
-            frameBuffer.insert(ch_name, 
-                               Slice(FLOAT, 
-                                     (char*)(&data[i*nhnc]), 
-                                     sizeof(float), 
-                                     (*width) * sizeof(float)));
-            
-        }
-        
-        
+		int i = 0;
+		for (ChannelList::ConstIterator it = channelList.begin(); it != channelList.end(); ++it, ++i)
+		{
+			frameBuffer.insert(it.name(), Slice(FLOAT, (char*)(&data[i*nhnc]), sizeof(float), (*width) * sizeof(float)));
+		}
+
         file.setFrameBuffer (frameBuffer);
         
         try {

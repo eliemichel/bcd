@@ -70,6 +70,7 @@ namespace bcd
 		float* pValues = nullptr;
 		pValues = readMultiImageEXR(i_pFilePath, &width, &height, &depth);
 		nbOfPixels = width * height;
+		cout << "Size: " << width << ", " << height << ", " << depth << endl;
 
 		o_rImage.resize(width, height, depth);
 

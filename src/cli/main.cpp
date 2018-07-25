@@ -104,6 +104,7 @@ namespace bcd
 		cout << "    -h <hist>            The file path to the input histograms buffer" << endl;
 		cout << "    -bh <hist>           The file path to the input histograms buffer as output by Blender" << endl;
 		cout << "    -c <cov>             The file path to the input covariance matrices buffer" << endl;
+		cout << "    -bc <cov>             The file path to the input covariance matrices buffer as output by Blender" << endl;
 		cout << "Optional arguments list:" << endl;
 		cout << "    -a <file>            The file path to the .bcd.json file containing arguments for the program" << endl;
 		cout << "    -d <float>           Histogram patch distance threshold (default: " << defaultProgramArgs.m_histogramPatchDistanceThreshold << ")" << endl;

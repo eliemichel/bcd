@@ -79,7 +79,7 @@ SET(header_implementation_files
 
 IF(CUDA_FOUND)
 	MESSAGE(STATUS "Using cuda's nvcc for generating ${target_name}")
-	list(APPEND CUDA_NVCC_FLAGS "-arch=sm_20")
+	list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30")
 	SET(src_files ${src_files} CudaHistogramDistance.cu)
 	SET(header_files
 		${header_files}

@@ -73,7 +73,6 @@ float  *readImageEXR(const char *name, int *nx, int *ny)
         // interlaced manner, using appropriate x & y stride values.
         FrameBuffer frameBuffer;
         
-        // reordered channels: internal RGB actually holds BGR because Blender exports multichannel EXR in the ABGR order
         frameBuffer.insert("R", Slice(FLOAT, (char*)(&pixelsR[0] -
                                                      dw.min.x - dw.min.y*width),
                                       sizeof(float), 

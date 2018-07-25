@@ -63,17 +63,17 @@ namespace bcd
 		ImfConstIt histoAndNbOfSamplesIt = i_rHistoAndNbOfSamplesImage.begin();
 		ImfConstIt histoAndNbOfSamplesItEnd = i_rHistoAndNbOfSamplesImage.end();
 
-		size_t destStride = 3 * sizeof(float);
-		size_t sourceStride = 4 * sizeof(float);
-		size_t offset = 1 * sizeof(float); // Channels are ordered ABGR so we skip the first one
+		size_t destStride = 3;
+		size_t sourceStride = 4;
+		size_t co = 1; // Channel Offset
 
 		for (; histoAndNbOfSamplesIt != histoAndNbOfSamplesItEnd; ++histoIt, ++nbOfSamplesIt, ++histoAndNbOfSamplesIt)
 		{
 			for (int i = 0; i < nbLayers; ++i)
 			{
-				memcpy(*histoIt + i * destStride + 0 * offset, *histoAndNbOfSamplesIt + i * sourceStride + 3 * offset, destStride); // R
-				memcpy(*histoIt + i * destStride + 1 * offset, *histoAndNbOfSamplesIt + i * sourceStride + 2 * offset, destStride); // G
-				memcpy(*histoIt + i * destStride + 2 * offset, *histoAndNbOfSamplesIt + i * sourceStride + 1 * offset, destStride); // B
+				(*histoIt)[i * destStride + 0] = (*histoAndNbOfSamplesIt)[i * sourceStride + 3]; // R
+				(*histoIt)[i * destStride + 1] = (*histoAndNbOfSamplesIt)[i * sourceStride + 2]; // G
+				(*histoIt)[i * destStride + 2] = (*histoAndNbOfSamplesIt)[i * sourceStride + 1]; // B
 			}
 			nbOfSamplesIt[0] = histoAndNbOfSamplesIt[d];
 		}
@@ -96,17 +96,17 @@ namespace bcd
 		ImfConstIt sourceIt = i_rSourceImage.begin();
 		ImfConstIt sourceItEnd = i_rSourceImage.end();
 
-		size_t destStride = 3 * sizeof(float);
-		size_t sourceStride = 4 * sizeof(float);
-		size_t offset = 1 * sizeof(float); // Channels are ordered ABGR so we skip the first one
+		size_t destStride = 3;
+		size_t sourceStride = 4;
+		size_t co = 1; // Channel Offset
 
 		for (; sourceIt != sourceItEnd; ++destIt, ++sourceIt)
 		{
 			for (int i = 0; i < nbLayers; ++i)
 			{
-				memcpy(*destIt + i * destStride + 0 * offset, *sourceIt + i * sourceStride + 3 * offset, destStride); // R
-				memcpy(*destIt + i * destStride + 1 * offset, *sourceIt + i * sourceStride + 2 * offset, destStride); // G
-				memcpy(*destIt + i * destStride + 2 * offset, *sourceIt + i * sourceStride + 1 * offset, destStride); // B
+				(*destIt)[i * destStride + 0] = (*sourceIt)[i * sourceStride + 3]; // R
+				(*destIt)[i * destStride + 1] = (*sourceIt)[i * sourceStride + 2]; // G
+				(*destIt)[i * destStride + 2] = (*sourceIt)[i * sourceStride + 1]; // B
 			}
 		}
 

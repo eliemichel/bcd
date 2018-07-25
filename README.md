@@ -1,5 +1,23 @@
 # BCD - Bayesian Collaborative Denoiser for Monte-Carlo Rendering #
 
+## Blender edit ##
+
+This fork is part of the proof of concept for an integration of BCD to Cycles, the path tracer built in Blender. Here is some early result:
+
+![](doc/cycles.png)
+
+### Usage ###
+
+ 1. Get the patched version of Blender that supports cryptosamples at: TODO
+ 2. Enable cryptosamples to your render (see image bellow)
+ 3. Run the add-on provided in `blender/addons/Cryptosamples.py` (install using the user preferences window) to automatically add the configured file output node.
+ 4. The add-on also print in the console the command line to call bcd-cli (assuming you are in the folder containing the blend file).
+ 5. Run BCD command line interface
+
+![Setup in blender](doc/blender-setup.png)
+
+Bellow is the original README.
+
 ![](BCD.jpg)
 
 ## Overview ##

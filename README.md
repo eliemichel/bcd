@@ -8,7 +8,7 @@ This fork is part of the proof of concept for an integration of BCD to Cycles, t
 
 ### Usage ###
 
- 1. Get the patched version of Blender that supports cryptosamples at: TODO
+ 1. Get the patched version of Blender that supports cryptosamples at: https://developer.blender.org/D3562
  2. Enable cryptosamples to your render (see image bellow)
  3. Run the add-on provided in `blender/addons/Cryptosamples.py` (install using the user preferences window) to automatically add the configured file output node.
  4. The add-on also print in the console the command line to call bcd-cli (assuming you are in the folder containing the blend file).

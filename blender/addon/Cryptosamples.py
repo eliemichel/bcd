@@ -75,7 +75,7 @@ def main(operator, context):
     
     # Variance output
     node_output_var = node_tree.nodes.new(type='CompositorNodeOutputFile')
-    node_output_var.base_path = "//cryptosamples/variance_###"
+    node_output_var.base_path = "//cryptosamples/covariance_###"
     node_output_var.format.file_format = 'OPEN_EXR_MULTILAYER'
     node_output_var.format.color_depth = '32'
     node_output_var.file_slots.clear()
@@ -95,7 +95,7 @@ def main(operator, context):
     link_layer_to_output("Sample Count", node_output_hist, "Count")
     node_output_hist.location = node_active.location + Vector([2 * node_active.dimensions[0], -300])
 
-    cmd = "bcd-cli.exe -o cryptosamples/denoised_{0:03d}.exr -i cryptosamples/mean_{0:03d}.exr -bh cryptosamples/histogram_{0:03d}.exr -bc -i cryptosamples/covariance_{0:03d}.exr".format(context.scene.frame_current)
+    cmd = "bcd-cli.exe -o cryptosamples/denoised_{0:03d}.exr -i cryptosamples/mean_{0:03d}.exr -bh cryptosamples/histogram_{0:03d}.exr -bc cryptosamples/covariance_{0:03d}.exr".format(context.scene.frame_current)
     print("To denoise, run:\n" + cmd + "\n")
 
 
